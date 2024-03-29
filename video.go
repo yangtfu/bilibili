@@ -1153,41 +1153,30 @@ func (c *Client) GetTopRecommendVideo(freshType, ps int) ([]*VideoInfo, error) {
 }
 
 type ArchivesList struct {
-	Aids     []int `json:"aids"`
-	Archives []struct {
-		Aid              int    `json:"aid"`
-		Bvid             string `json:"bvid"`
-		Ctime            int    `json:"ctime"`
-		Duration         int    `json:"duration"`
-		EnableVt         bool   `json:"enable_vt"`
-		InteractiveVideo bool   `json:"interactive_video"`
-		Pic              string `json:"pic"`
-		PlaybackPosition int    `json:"playback_position"`
-		Pubdate          int    `json:"pubdate"`
-		Stat             struct {
-			View int `json:"view"`
-			Vt   int `json:"vt"`
-		} `json:"stat"`
-		State     int    `json:"state"`
-		Title     string `json:"title"`
-		UgcPay    int    `json:"ugc_pay"`
-		VtDisplay string `json:"vt_display"`
-	} `json:"archives"`
-	Meta struct {
-		Category    int    `json:"category"`
-		Cover       string `json:"cover"`
-		Description string `json:"description"`
-		Mid         int    `json:"mid"`
-		Name        string `json:"name"`
-		Ptime       int    `json:"ptime"`
-		SeasonID    int    `json:"season_id"`
-		Total       int    `json:"total"`
-	} `json:"meta"`
+	Aids []int `json:"aids"`
 	Page struct {
-		PageNum  int `json:"page_num"`
-		PageSize int `json:"page_size"`
-		Total    int `json:"total"`
+		Num   int `json:"num"`
+		Size  int `json:"size"`
+		Total int `json:"total"`
 	} `json:"page"`
+	Archives []struct {
+		Aid      int    `json:"aid"`
+		Title    string `json:"title"`
+		Pubdate  int    `json:"pubdate"`
+		Ctime    int    `json:"ctime"`
+		State    int    `json:"state"`
+		Pic      string `json:"pic"`
+		Duration int    `json:"duration"`
+		Stat     struct {
+			View int `json:"view"`
+		} `json:"stat"`
+		Bvid             string `json:"bvid"`
+		UgcPay           int    `json:"ugc_pay"`
+		InteractiveVideo bool   `json:"interactive_video"`
+		EnableVt         int    `json:"enable_vt"`
+		VtDisplay        string `json:"vt_display"`
+		PlaybackPosition int    `json:"playback_position"`
+	} `json:"archives"`
 }
 
 // GetArchivesList 获取视频合集信息 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
@@ -1196,13 +1185,13 @@ func GetArchivesList(mid int, sid int, pn int, ps int, sort_reverse bool) (*Arch
 }
 func (c *Client) GetArchivesList(mid int, sid int, pn int, ps int, sort_reverse bool) (*ArchivesList, error) {
 	postData := map[string]string{
-		"mid":          strconv.Itoa(mid),
-		"page_num":     strconv.Itoa(pn),
-		"page_size":    strconv.Itoa(ps),
-		"season_id":    strconv.Itoa(sid),
-		"sort_reverse": strconv.FormatBool(sort_reverse),
+		"mid":       strconv.Itoa(mid),
+		"pn":        strconv.Itoa(pn),
+		"ps":        strconv.Itoa(ps),
+		"series_id": strconv.Itoa(sid),
+		"sort":      strconv.FormatBool(sort_reverse),
 	}
-	resp, err := c.resty().R().SetQueryParams(postData).Get("https://api.bilibili.com/x/polymer/web-space/seasons_archives_list")
+	resp, err := c.resty().R().SetQueryParams(postData).Get("https://api.bilibili.com/x/series/archives")
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
