@@ -1,4 +1,4 @@
-module github.com/CuteReimu/bilibili/v2
+module github.com/yangtfu/bilibili/v3
 
 go 1.19
 
